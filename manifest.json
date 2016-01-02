@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    
+    "name": "Modern Index Pages",
+    "description": "Nicer-looking directory index pages",
+    "version": "1.0",
+    
+    "permissions": [
+        "webNavigation",
+        "tabs",
+        "<all_urls>"
+    ],
+    
+    "background": {
+        "scripts": [ "listener.js" ],
+        "persistent": false
+    }
+}
