@@ -63,3 +63,9 @@ h1 {
   font-weight: 500;
   padding: .1em .3em;
 }
+
+.media {
+  margin: 0;
+  max-width: 100%;
+  padding: 0;
+}
