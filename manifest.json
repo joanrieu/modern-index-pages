@@ -14,5 +14,9 @@
     "background": {
         "scripts": [ "listener.js" ],
         "persistent": false
+    },
+    
+    "icons": {
+        "128": "icon128.png"
     }
 }
