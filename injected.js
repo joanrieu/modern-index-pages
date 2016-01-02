@@ -59,7 +59,7 @@ function getReadableTimestamp(date) {
 }
 
 function getReadableSize(size) {
-    var unitIndex = Math.round(Math.log2(size) / Math.log2(1024));
+    var unitIndex = Math.floor(Math.log2(size) / Math.log2(1024));
     var unitText = [ "B", "KB", "MB", "GB", "TB", "PB" ][unitIndex];
     var unit = Math.pow(1024, unitIndex);
     var sizeInUnit = Math.round(size / unit * 10) / 10;
