@@ -65,6 +65,7 @@ h1 {
 }
 
 .media {
+  border-radius: .2em;
   margin: 0;
   max-width: 100%;
   padding: 0;
