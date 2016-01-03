@@ -87,36 +87,41 @@ function makeHTML(index) {
         $type = makeEl({ text: entry.type, className: "info", parentEl: $entry });
         if (entry.size)
             makeEl({ text: getReadableSize(entry.size), className: "info", parentEl: $entry });
+        switch (entry.category) {
+            case "audio":
+                var $audio = document.createElement("audio");
+                $audio.className = "media";
+                $audio.setAttribute("src", entry.href);
+                $audio.setAttribute("controls", true);
+                $audio.setAttribute("preload", "metadata");
+                $entry.appendChild($audio);
+                break;
+            case "image":
+                if (entry.size < 2 * 1024 * 1024) {
+                    var $image = document.createElement("img");
+                    $image.className = "media";
+                    $image.setAttribute("src", entry.href);
+                    $entry.appendChild($image);
+                }
+                break;
+            case "video":
+                var $video = document.createElement("video");
+                $video.className = "media";
+                $video.setAttribute("src", entry.href);
+                $video.setAttribute("controls", true);
+                $video.setAttribute("preload", "metadata");
+                $entry.appendChild($video);
+                break;
+        }
         $index.appendChild($entry);
     }
     return $index;
 }
 
-function addEventHandlers() {
-    addVideoHandlers();
-}
-
-function addVideoHandlers() {
-    var $videos = document.querySelectorAll(".mime-video");
-    for (var i = 0; i < $videos.length; ++i) {
-        var $info = $videos[i].querySelector(".info");
-        $info.onclick = function($entry) {
-            this.onclick = null;
-            var $video = document.createElement("video");
-            $video.className = "media";
-            $video.setAttribute("src", $entry.querySelector("a").getAttribute("href"));
-            $video.setAttribute("controls", true);
-            $video.setAttribute("autoplay", true);
-            $entry.appendChild($video);
-        }.bind($info, $videos[i]);
-    }
-}
-
 function run() {
     $html = makeHTML(buildIndexFromServerHTML());
-    document.body.innerHTML = "";
+    document.body.innerHTML = null;
     document.body.appendChild($html);
-    addEventHandlers();
 }
 
 // Map generated from http://www.stdicon.com/mimetypes
