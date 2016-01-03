@@ -1,0 +1,19 @@
+{
+  "name": "modern-index-pages",
+  "version": "1.0.0",
+  "description": "Nicer-looking directory index pages",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joanrieu/modern-index-pages.git"
+  },
+  "author": "Joan Rieu <joan.rieu@gmail.com>",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/joanrieu/modern-index-pages/issues"
+  },
+  "homepage": "https://github.com/joanrieu/modern-index-pages#readme",
+  "dependencies": {
+    "vue": "^1.0.13",
+    "webpack": "^1.12.9"
+  }
+}
