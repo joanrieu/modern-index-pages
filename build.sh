@@ -1,14 +1,8 @@
-#!/bin/bash -ex
+#!/bin/bash
+set -ex
 
 TARGET=modern-index-pages
 
-rm -rf $TARGET{/,.zip}
-
-cp -R src/ $TARGET/
-webpack \
-    --entry ./src/index.js \
-    --output-path $TARGET/ \
-    --output-filename index.js \
-    --bail
-zip $TARGET.zip -r $TARGET/
-rm -rf $TARGET/
+cp -R src/ build/
+webpack --bail
+zip $TARGET.zip -r build/
