@@ -1,3 +1,37 @@
+var Vue = require("vue");
+
+Vue.filter("size", function(size) {
+    var unitIndex = Math.floor(Math.log2(size) / Math.log2(1024));
+    var unitText = [ "B", "KB", "MB", "GB", "TB", "PB" ][unitIndex];
+    var unit = Math.pow(1024, unitIndex);
+    var sizeInUnit = Math.round(size / unit * 10) / 10;
+    return sizeInUnit + " " + unitText;
+});
+
+Vue.component("mip-entry", {
+    props: [ "entry" ],
+    template: `
+        <div class="entry">
+            <a class="name" href="{{entry.href}}">
+                {{entry.name}}
+            </a>
+            <div v-if="entry.date" class="date">
+                {{entry.date.toLocaleTimeString()}}<br>
+                {{entry.date.toLocaleDateString()}}
+            </div>
+            <div class="info">
+                {{entry.type}}
+            </div>
+            <div v-if="entry.size !== null" class="info">
+                {{entry.size | size}}
+            </div>
+            <audio v-if="entry.category === 'audio'" :src="entry.href" controls preload="metadata" class="media"></audio>
+            <img v-if="entry.category === 'image'" :src="entry.href" class="media">
+            <video v-if="entry.category === 'video'" :src="entry.href" controls preload="metadata" class="media"></video>
+        </div>
+    `
+});
+
 function buildIndexFromServerHTML() {
     var links = document.getElementsByTagName("a");
     var index = [];
@@ -44,84 +78,21 @@ function buildIndexFromServerHTML() {
     return index;
 }
 
-function makeEl(details) {
-    var el = document.createElement(details.elName || "div");
-    if (details.className)
-        el.className = details.className;
-    if (details.text)
-        el.textContent = details.text;
-    if (details.parentEl)
-        return details.parentEl.appendChild(el);
-    else
-        return el;
-}
-
-function getReadableTimestamp(date) {
-    return date.toLocaleTimeString() + "\n" + date.toLocaleDateString();
-}
-
-function getReadableSize(size) {
-    var unitIndex = Math.floor(Math.log2(size) / Math.log2(1024));
-    var unitText = [ "B", "KB", "MB", "GB", "TB", "PB" ][unitIndex];
-    var unit = Math.pow(1024, unitIndex);
-    var sizeInUnit = Math.round(size / unit * 10) / 10;
-    return sizeInUnit + " " + unitText;
-}
-
-function makeHTML(index) {
-    var $index = makeEl({ className: "index" });
-    makeEl({ text: document.title, elName: "h1", parentEl: $index });
-    for (var i in index) {
-        var entry = index[i],
-            $entry = makeEl({ className: "entry", parentEl: $index }),
-            $link = makeEl({ text: entry.name, elName: "a", className: "name", parentEl: $entry });
-        if (entry.category)
-            $entry.classList.add("mime-" + entry.category);
-        $link.setAttribute("href", entry.href);
-        if (entry.date) {
-            var date = getReadableTimestamp(entry.date).split("\n"),
-                $date = makeEl({ className: "date", parentEl: $entry });
-            for (var j in date)
-                makeEl({ text: date[j], parentEl: $date });
-        }
-        $type = makeEl({ text: entry.type, className: "info", parentEl: $entry });
-        if (entry.size)
-            makeEl({ text: getReadableSize(entry.size), className: "info", parentEl: $entry });
-        switch (entry.category) {
-            case "audio":
-                var $audio = document.createElement("audio");
-                $audio.className = "media";
-                $audio.setAttribute("src", entry.href);
-                $audio.setAttribute("controls", true);
-                $audio.setAttribute("preload", "metadata");
-                $entry.appendChild($audio);
-                break;
-            case "image":
-                if (entry.size < 2 * 1024 * 1024) {
-                    var $image = document.createElement("img");
-                    $image.className = "media";
-                    $image.setAttribute("src", entry.href);
-                    $entry.appendChild($image);
-                }
-                break;
-            case "video":
-                var $video = document.createElement("video");
-                $video.className = "media";
-                $video.setAttribute("src", entry.href);
-                $video.setAttribute("controls", true);
-                $video.setAttribute("preload", "metadata");
-                $entry.appendChild($video);
-                break;
-        }
-        $index.appendChild($entry);
-    }
-    return $index;
-}
-
 function run() {
-    $html = makeHTML(buildIndexFromServerHTML());
+    var title = document.title,
+        index = buildIndexFromServerHTML();
     document.body.innerHTML = null;
-    document.body.appendChild($html);
+    new Vue({
+        el: document.body,
+        replace: false,
+        data: { title, index },
+        template: `
+            <div class="index">
+                <h1>{{title}}</h1>
+                <mip-entry v-for="entry in index" :entry="entry" />
+            </div>
+        `
+    });
 }
 
 // Map generated from http://www.stdicon.com/mimetypes
