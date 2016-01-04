@@ -26,9 +26,9 @@ Vue.component("mip-entry", {
             <div v-if="entry.size !== null" class="info">
                 {{entry.size | size}}
             </div>
-            <audio v-if="entry.category === 'audio'" :src="entry.href" controls preload="metadata" class="media"></audio>
+            <audio v-if="entry.category === 'audio'" :src="entry.href" controls preload="none" class="media"></audio>
             <img v-if="entry.category === 'image'" :src="entry.href" class="media">
-            <video v-if="entry.category === 'video'" :src="entry.href" controls preload="metadata" class="media"></video>
+            <video v-if="entry.category === 'video'" :src="entry.href" controls preload="none" class="media"></video>
         </div>
     `
 });
